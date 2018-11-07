@@ -40,6 +40,8 @@ services:
     environment:
       - JORMUNGANDR_SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/jormungandr
       - JORMUNGANDR_INSTANCE_DEFAULT={"key":"default","zmq_socket":"tcp://kraken-default:30000"}
+      - JORMUNGANDR_GRAPHICAL_ISOCHRONE=true
+      - JORMUNGANDR_HEAT_MAP=true
     ports:
       - "9191:80"
 
