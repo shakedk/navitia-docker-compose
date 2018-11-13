@@ -69,7 +69,12 @@ Copy the GTFS file (with the transfers file included) and the OSM files into the
 
 $ docker cp <Files_Folder>/israel-and-palestine-latest.osm.pbf navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
 $ docker cp <Files_Folder>/<GTFS-With-Transfers-file>.zip navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
-The copy process takes several seconds (there's no configrmation for it) and then the graph build takes abour 30-40 minutes. In the mean time, we'll setup the Navitia playground
+
+The copy process takes several seconds (there's no configrmation for it).
+The osm process should take about 10 minutes and ends in a message like: Task tyr.binarisation.osm2ed[86d6383d-f29f-4c24-bfad-5d8f911e8182] succeeded in 98.5151315s: None
+The gtfs build takes about 30-40 minutes and ends in a message like: Task tyr.binarisation.gtfs2ed[304b2bb6-f9c9-4278-86ca-3f2c9022f6b4] succeeded in 1092.6473235s: None
+
+ In the mean time, we'll setup the Navitia playground
 
 
 10. Run the Navitia Playground
@@ -103,3 +108,5 @@ $ docker logs navitia-docker-compose_tyr_worker_1 >& workerLogs.txt
 
 b. Open workerLogs.txt and search for "gtfs2ed" or "osm2ed". The logs should show that these jobs are launches and succeded, e.g.:
 	Line 25170: [2018-11-06 13:14:41,040] [ INFO] [    1] [        celery.worker.job] Task tyr.binarisation.gtfs2ed[37095a3c-5fbd-494a-9660-0040fb9dffb8] succeeded in 1558.0350151s: None
+
+
