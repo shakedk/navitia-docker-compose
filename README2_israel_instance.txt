@@ -59,7 +59,7 @@ a. Clone the following repository to your machine:
 $ git clone https://github.com/shakedk/navitia-docker-compose.git
 
 b. Open git bash at the repository folder and run 
-$ docker-compose-up
+$ docker-compose up
 Once all the containers are up, green 'done's appear.
 
 
@@ -68,7 +68,7 @@ Once all the containers are up, green 'done's appear.
 Copy the GTFS file (with the transfers file included) and the OSM files into the Navitia server containers. Run the following commands one-by-one in a NEW terminal:
 
 $ docker cp <Files_Folder>/<GTFS-With-Transfers-file>.zip navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
-$ docker cp <Files_Folder>/israel-and-palestine-latest.osm.pbf navitia-docker-compose_tyr_worker_1:/srv/ed/input/israel/
+$ docker cp <Files_Folder>/israel-and-palestine-latest.osm.pbf navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
 
 The copy process takes several seconds (there's no configrmation for it) and then the graph build takes abour 30-40 minutes. In the mean time, we'll setup the Navitia playground
 
@@ -76,18 +76,18 @@ The copy process takes several seconds (there's no configrmation for it) and the
 10. Run the Navitia Playground
 =============================
 a. Clone the following repository to your machine: 
-$ git clone the navitia-playground 
+$ git clone https://github.com/shakedk/navitia-playground.git 
 
 b. Open git bash at the repository folder and run 
 $ npm install && npx bower install
 
-Onfce finished, run:
+Once finished, run:
 npx gulp dev
 
 11. Access the Playground and start hacking! 
 ===========================================
 - The URL for the playground is: http://localhost:4242/play.html
-- The URL for teh API Server is: http://localhost:9191/v1
+- The URL for the API Server is: http://localhost:9191/v1
 - Example URL for getting started with a list of all lines covered in Israel: http://localhost:4242/play.html?request=http%3A%2F%2Flocalhost%3A9191%2Fv1%2Fcoverage%2Fdefault%2Flines%3F
 - Link to the Navitia API Docs: http://doc.navitia.io/
 
@@ -102,5 +102,5 @@ You can view the worker server logs to see if the job completled succefully:
 a. Save the worker logs to a fodler on your machine by opening a terminal and running:
 $ docker logs navitia-docker-compose_tyr_worker_1 >& workerLogs.txt
 
-b. Open workerLogs.txt and search for "grfs2ed" or "osm2ed". The logs should show that these jobs are launches and succeded, e.g.:
+b. Open workerLogs.txt and search for "gtfs2ed" or "osm2ed". The logs should show that these jobs are launches and succeded, e.g.:
 	Line 25170: [2018-11-06 13:14:41,040] [ INFO] [    1] [        celery.worker.job] Task tyr.binarisation.gtfs2ed[37095a3c-5fbd-494a-9660-0040fb9dffb8] succeeded in 1558.0350151s: None
