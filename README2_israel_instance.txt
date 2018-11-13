@@ -67,9 +67,8 @@ Once all the containers are up, green 'done's appear.
 -------------------------------------------------------------------
 Copy the GTFS file (with the transfers file included) and the OSM files into the Navitia server containers. Run the following commands one-by-one in a NEW terminal:
 
-$ docker cp <Files_Folder>/<GTFS-With-Transfers-file>.zip navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
 $ docker cp <Files_Folder>/israel-and-palestine-latest.osm.pbf navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
-
+$ docker cp <Files_Folder>/<GTFS-With-Transfers-file>.zip navitia-docker-compose_tyr_worker_1:/srv/ed/input/default/
 The copy process takes several seconds (there's no configrmation for it) and then the graph build takes abour 30-40 minutes. In the mean time, we'll setup the Navitia playground
 
 
