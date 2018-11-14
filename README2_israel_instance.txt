@@ -62,6 +62,9 @@ b. Open git bash at the repository folder and run
 $ docker-compose up
 Once all the containers are up, green 'done's appear.
 
+Sanity check: Go to http://localhost:9191/v1/coverage/default and you should see a JSON response which includes: 
+status: "no_data"
+
 
 9. Copy GTFS and OSM files to generate the transit graph in Navitia
 -------------------------------------------------------------------
@@ -101,12 +104,38 @@ Troubleshooting:
 1. "The region default is dead":
 
 If the server hsan't done generating the graph yet, this is the standard error message. Wait a bit longer.
-You can view the worker server logs to see if the job completled succefully:
 
+If long time passed and your're sure the data processing is done (look below for logs tutorial), stop and restart the service:
+a. Stop all containers with Ctr+C or $docker stop $(docker ps -a -q)
+b. Run docker-compose up
+
+You can view the worker server logs to see if the job completled succefully:
 a. Save the worker logs to a fodler on your machine by opening a terminal and running:
 $ docker logs navitia-docker-compose_tyr_worker_1 >& workerLogs.txt
 
-b. Open workerLogs.txt and search for "gtfs2ed" or "osm2ed". The logs should show that these jobs are launches and succeded, e.g.:
+b. Open workerLogs.txt and search for "gtfs2ed", "osm2ed" or "ed2nav". The logs should show that these jobs are launches and succeded, e.g.:
 	Line 25170: [2018-11-06 13:14:41,040] [ INFO] [    1] [        celery.worker.job] Task tyr.binarisation.gtfs2ed[37095a3c-5fbd-494a-9660-0040fb9dffb8] succeeded in 1558.0350151s: None
+
+
+
+
+
+If you need to restart the deploy process from scratch and delete all data and containers run - THIS WILL REMOVE ANY DOCKER assets, NOT ONLY NATIVIA:
+1. Stop all running containers by navitia: 
+$ docker ps -a | grep navitia | awk '{print $1}' | xargs docker stop
+
+2. Delete all stopped containers by Navitia: 
+$ docker ps -a -f status=exited| grep navitia | awk '{print $1}' | xargs docker rm
+
+3. Remove all unsued volumes by navitia:
+$ docker volume ls | grep navitia | awk '{print $2}' | xargs docker volume rm
+OR remove all volumes that are unsued by any contianer
+$ docker volume prune
+
+4. Remove all the UNUSED images (we have to move all, because the names are not specific)
+docker image prune -a
+
+
+
 
 
