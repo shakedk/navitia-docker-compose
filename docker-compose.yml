@@ -11,6 +11,7 @@ services:
     environment:
       - INSTANCE_default=
 
+
   database:
     environment:
       - POSTGRES_USER=navitia
@@ -30,6 +31,8 @@ services:
         - KRAKEN_GENERAL_instance_name=default
         - KRAKEN_GENERAL_database=/srv/ed/output/default.nav.lz4
         - KRAKEN_BROKER_host=rabbitmq
+        #following is custom config, see jormungandr comments - we allow 2 threads of kraken
+        - KRAKEN_GENERAL_nb_threads=4
     volumes_from:
       - tyr_beat:ro
     expose:
@@ -42,8 +45,12 @@ services:
       - JORMUNGANDR_INSTANCE_DEFAULT={"key":"default","zmq_socket":"tcp://kraken-default:30000"}
       - JORMUNGANDR_GRAPHICAL_ISOCHRONE=true
       - JORMUNGANDR_HEAT_MAP=true
+    # Allowing 5 processes to go up at the same time - to go back to original deploymeny, remove this line all together.
+    # See KRAKEN_GENERAL_nb_threads=2 too.
+    command: ["uwsgi" ,"--mount", "/=jormungandr:app", "--http", "0.0.0.0:80", "-p", "5", "--lazy-apps", "--master"]
     ports:
       - "9191:80"
+
 
   tyr_worker:
     image: navitia/tyr-worker:latest
