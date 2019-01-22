@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+
+  kraken-secondary-cov:
+    image: navitia/kraken:latest
+    environment:
+        - KRAKEN_GENERAL_instance_name=secondary-cov
+        - KRAKEN_GENERAL_database=/srv/ed/output/secondary-cov.nav.lz4
+        - KRAKEN_BROKER_host=rabbitmq
+        - KRAKEN_GENERAL_nb_threads=2
+    volumes_from:
+      - tyr_beat:ro
+    expose:
+      - "30000"
+
+  jormungandr:
+    environment:
+      - JORMUNGANDR_INSTANCE_secondary-cov={"key":"secondary-cov","zmq_socket":"tcp://kraken-secondary-cov:30000"}
+
+  instances_configurator:
+    environment:
+      - INSTANCE_secondary-cov=
+
