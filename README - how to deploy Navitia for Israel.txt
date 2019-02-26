@@ -1,5 +1,4 @@
 
-
 RUNNING NAVITIA SERVER & PLAYGROUND POST INITIAL SET-UP
 =======================================================
 1. Run Docker on your machine
@@ -47,16 +46,29 @@ RUNNING NAVITIA SERVER & PLAYGROUND FOR THE FIRST TIME
 By default, when supplying Navitia with ordinary GTFS file , Navitia computes transfers only within a stop_area that includes several stops. So, if the traveller needs to walk between stop_areas (let's say Terminal 2000 bus stops on Arlozorov st. and the Savidor train station) - this would not be possible to take into consideration.
 
 We will generate a transfrs table for the provided GTFS file.
-a. Clone the following repository to your machine: git clone https://github.com/CanalTP/transfe_rs
-b. 
-c. 
+a. Clone the following repository to your machine: git clone https://github.com/shakedk/navitia-transfers
+b. Extract stops.txt from the GTFS Zip to the directory of gtfs2transfers.py
+c. run "python3 gtfs2transfers.py" - takes around 50 minutes
+d. Add trasnfers.txt back to the GTFS zip file
 
 7. Add the transfers.txt file into the GTFS zip file
 
 8. Run the Navitia Server
 -------------------------
-a. Clone the following repository to your machine: 
+a. Clone the following repository to your machine:
 $ git clone https://github.com/shakedk/navitia-docker-compose.git
+
+b. Configure the docker container logs for rotation so they don't blow up over time:
+$ cd /etc/docker
+$ sudo touch daemon.json
+$ vim daemon.json
+Go into to edit mode by pressing I and add:
+{
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "10m", "max-file": "3"}
+}
+Quit with w and q
+$ sudo systemctl reload docker
 
 b. Open git bash at the repository folder and run 
 $ docker-compose up

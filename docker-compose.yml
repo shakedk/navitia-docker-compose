@@ -32,7 +32,7 @@ services:
         - KRAKEN_GENERAL_database=/srv/ed/output/default.nav.lz4
         - KRAKEN_BROKER_host=rabbitmq
         #following is custom config, see jormungandr comments - we allow 2 threads of kraken
-        - KRAKEN_GENERAL_nb_threads=4
+        - KRAKEN_GENERAL_nb_threads=2
     volumes_from:
       - tyr_beat:ro
     expose:

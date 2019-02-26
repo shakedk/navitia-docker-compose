@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+  kraken-oct-18:
+    image: navitia/kraken:latest
+    environment:
+        - KRAKEN_GENERAL_instance_name=oct-18
+        - KRAKEN_GENERAL_database=/srv/ed/output/oct-18.nav.lz4
+        - KRAKEN_BROKER_host=rabbitmq
+    volumes_from:
+      - tyr_beat:ro
+    expose:
+      - "30000"
+
+  jormungandr:
+    environment:
+      - JORMUNGANDR_INSTANCE_oct-18={"key":"oct-18","zmq_socket":"tcp://kraken-oct-18:30000"}
+
+
+  instances_configurator:
+    environment:
+      - INSTANCE_oct-18=
