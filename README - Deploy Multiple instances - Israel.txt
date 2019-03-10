@@ -53,7 +53,7 @@ services:
 =============================================================================
 a. If you "docker-compose up" you only get the deafult coverage. Run:
 
-"docker-compose -f docker-compose.yml -f docker-israel-custom-instances.yml up"
+$ docker-compose -f docker-compose.yml -f docker-israel-custom-instances.yml up
 
 b. After a minute or so, you can access both covereges by going to "http://localhost:9191/v1/coverage/default" and "http://localhost:9191/v1/coverage/<covereage-name>"
 
