@@ -4,7 +4,7 @@ RUNNING NAVITIA SERVER & PLAYGROUND POST INITIAL SET-UP
 1. Run Docker on your machine
 
 2. Open a Git bash terminal in navitia-docker-compose folder and run:
-$ docker-compose-up
+$ docker-compose -f compose\ files/docker-compose-secondary-cov.yml -p navitia-docker-compose up
 
 3. Open a Git bash terminal in navitia-playground and run:
 $ npx gulp dev
