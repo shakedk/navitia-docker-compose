@@ -203,7 +203,7 @@ OR remove all volumes that are unsued by any contianer
 $ docker volume prune
 
 d. Remove all the UNUSED images (we have to move all, because the names are not specific)
-docker image prune -a
+$ docker image prune -a
 
 
 3. Accessing the continaer with Bash terminal:
