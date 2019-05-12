@@ -3,7 +3,7 @@ version: '2'
 services:
 
   kraken-secondary-cov:
-    image: navitia/kraken:latest
+    image: navitia/kraken:v2.79.0
     environment:
         - KRAKEN_GENERAL_instance_name=secondary-cov
         - KRAKEN_GENERAL_database=/srv/ed/output/secondary-cov.nav.lz4
