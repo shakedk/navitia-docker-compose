@@ -1,0 +1,90 @@
+version: '2'
+
+services:
+  instances_configurator:
+    image: navitia/instances-configurator:v2.79.0
+    volumes_from:
+      - tyr_beat
+      - jormungandr
+    volumes:
+      - kraken_instance_conf:/srv/kraken
+    environment:
+      - INSTANCE_ondemand-20180526=
+
+
+  database:
+    environment:
+      - POSTGRES_USER=navitia
+      - POSTGRES_PASSWORD=navitia
+      - POSTGRES_DB=jormungandr
+    image: mdillon/postgis:9.5
+
+  rabbitmq:
+    image: rabbitmq:management
+
+  redis:
+    image: redis:3-alpine
+
+  kraken-ondemand-20180526:
+    image: navitia/kraken:v2.79.0
+    environment:
+        - KRAKEN_GENERAL_instance_name=ondemand-20180526
+        - KRAKEN_GENERAL_database=/srv/ed/output/ondemand-20180526.nav.lz4
+        - KRAKEN_BROKER_host=rabbitmq
+        #following is custom config, see jormungandr comments - we allow 2 threads of kraken
+        - KRAKEN_GENERAL_nb_threads=2
+    volumes_from:
+      - tyr_beat:ro
+    expose:
+      - "30000"
+
+  jormungandr:
+    image: navitia/jormungandr:v2.79.0
+    environment:
+      - JORMUNGANDR_SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/jormungandr
+      - JORMUNGANDR_INSTANCE_DEFAULT={"key":"ondemand-20180526","zmq_socket":"tcp://kraken-ondemand-20180526:30000"}
+      - JORMUNGANDR_GRAPHICAL_ISOCHRONE=true
+      - JORMUNGANDR_HEAT_MAP=true
+    # Allowing 5 processes to go up at the same time - to go back to original deploymeny, remove this line all together.
+    # See KRAKEN_GENERAL_nb_threads=2 too.
+    command: ["uwsgi" ,"--mount", "/=jormungandr:app", "--http", "0.0.0.0:80", "-p", "5", "--lazy-apps", "--master"]
+    ports:
+      - "9191:80"
+
+
+  tyr_worker:
+    image: navitia/tyr-worker:v2.79.0
+    volumes_from:
+      - tyr_beat
+    environment:
+      - TYR_CITIES_DATABASE_URI=postgresql://navitia:navitia@cities_database/cities
+      - TYR_CITIES_OSM_FILE_PATH=/srv/ed/
+
+  tyr_beat:
+    image: navitia/tyr-beat:v2.79.0
+    volumes:
+      - tyr_data:/srv/ed
+      - tyr_instance_conf:/etc/tyr.d
+
+  tyr_web:
+    image: navitia/tyr-web:v2.79.0
+    volumes_from:
+      - tyr_beat
+    ports:
+      - '9898:80'
+    environment:
+      - TYR_CITIES_DATABASE_URI=postgresql://navitia:navitia@cities_database/cities
+      - TYR_CITIES_OSM_FILE_PATH=/srv/ed/
+
+  cities_database:
+    environment:
+      - POSTGRES_USER=navitia
+      - POSTGRES_PASSWORD=navitia
+      - POSTGRES_DB=cities
+    image: mdillon/postgis:9.5 
+
+volumes:
+  tyr_data:
+  tyr_instance_conf:
+  jormungandr_instance_conf:
+  kraken_instance_conf:
